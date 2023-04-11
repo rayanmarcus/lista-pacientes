@@ -31,8 +31,8 @@ export default {
   name: 'ModalPatientRemoveComponent',
   props: ['dataPatient'],
   methods: {
-    removePatient () {
-      this.$https.delete(`${this.dataPatient.id}`)
+    async removePatient () {
+      await this.$https.delete(`${this.dataPatient.id}`)
         .then(() => {
           this.$('#modalPatientRemove').modal('hide')
           this.$notify({

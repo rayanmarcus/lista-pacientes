@@ -8,7 +8,7 @@
             type="button"
             class="btn
             btn-primary"
-            @click="openModal()"
+            @click="openModalToRegisterPatient()"
           >
             Cadastrar novo paciente
           </button>
@@ -39,19 +39,19 @@
               <td>
                 <div class="btn-group">
                   <button
-                    @click="viewDataPatient(patient.id)"
+                    @click="openModalToViewDataPatient(patient)"
                     class="btn btn-outline-primary"
                   >
                     <i class="bi-eye"></i>
                   </button>
                   <button
-                    @click="editDataPatient(patient.id)"
+                    @click="openModalToEditDataPatient(patient)"
                     class="btn btn-outline-secondary"
                   >
                     <i class="bi-pencil-square"></i>
                   </button>
                   <button
-                    @click="removeDataPatient(patient)"
+                    @click="openModalToRemoveDataPatient(patient)"
                     class="btn btn-outline-danger"
                   >
                     <i class="bi bi-trash"></i>
@@ -78,125 +78,66 @@
         </table>
       </div>
     </div>
-    <ModalPatient />
-    <ModalPatientRemove :data-patient="dataPatient"/>
+    <ModalViewPatient :data-patient="dataPatient" />
+    <ModalEditPatient :data-edit-patient="dataPatient" :is-edit-patient="isEditPatient" />
+    <ModalPatientRemove :data-patient="dataPatient" />
     <notifications group="notification" />
   </div>
 </template>
 
 <script>
 import $ from 'jquery'
-import axios from 'axios'
-import ModalPatient from './ModalPatient.vue'
+import ModalViewPatient from './ModalViewPatient.vue'
+import ModalEditPatient from './ModalEditPatient.vue'
 import ModalPatientRemove from './ModalPatientRemove.vue'
-
-// import { validaCns, validaCnsProv } from '../helpers/index'
-
-const headers = { 'Content-type': 'application/json; charset=UTF-8' }
-const urlApi = 'https://my-json-server.typicode.com/rayanmarcus/fakeapi'
 
 export default {
   name: 'PatientsComponent',
-  components: { ModalPatient, ModalPatientRemove },
+  components: { ModalViewPatient, ModalEditPatient, ModalPatientRemove },
   data () {
     return {
       dataPatients: [],
       errorDataPatients: '',
-      patientSpecificData: [],
-      errorPatientSpecificData: '',
-      dataPatient: ''
+      dataPatient: '',
+      isEditPatient: false
     }
   },
-  async mounted () {
-    await axios.get(`${urlApi}/pacientes`, { headers })
+  async created () {
+    await this.$https.get()
       .then((response) => {
         this.dataPatients = response.data
       })
       .catch((_error) => {
         this.errorDataPatients = 'Erro ao realizar a requisição. Tente novamente mais tarde!'
+        this.$notify({
+          group: 'notification',
+          title: `<i class="bi bi-x-circle"></i> ${this.errorDataPatients}`,
+          type: 'error'
+        })
       })
   },
   methods: {
-    openModal () {
-      // eslint-disable-next-line no-undef
-      $('#modalPatient').modal('show')
+    openModalToRegisterPatient () {
+      this.isEditPatient = false
+      this.dataPatient = ''
+      $('#modalEditPatient').modal('show')
     },
-    async viewDataPatient (idPatient) {
-      await axios.get(`${urlApi}/pacientes/${idPatient}`, { headers })
-        .then((response) => {
-          this.patientSpecificData = response.data
-          // Chamar modal, com a opção de edição
-        })
-        .catch((_error) => {
-          this.errorPatientSpecificData = 'Erro ao localizar os dados deste paciente. Tente novamente mais tarde!'
-        })
+    openModalToViewDataPatient (patient) {
+      this.dataPatient = patient
+      $('#modalViewPatient').modal('show')
     },
-    async editDataPatient (idPatient) {
-      console.log(idPatient)
+    openModalToEditDataPatient (patient) {
+      this.dataPatient = patient
+      this.isEditPatient = true
+      $('#modalEditPatient').modal('show')
     },
-    async removeDataPatient (patient) {
+    openModalToRemoveDataPatient (patient) {
       this.dataPatient = patient
       $('#modalPatientRemove').modal('show')
-    },
-    async saveData () {
-      const data = {
-        nome: 'Ricardo Souza',
-        nomeMae: 'Ricardo Souza',
-        dataNascimento: '06/06/1987',
-        cpf: '433.666.666-66',
-        cns: '678901234567890',
-        cep: '56789-012',
-        rua: 'Rua F',
-        numero: '600',
-        bairro: 'Bairro F',
-        cidade: 'Cidade F',
-        estado: 'MG'
-      }
-      axios.post(`${urlApi}/posts`, data, { headers })
-        .then(response => {
-          console.log(response.data)
-        })
-        .catch(error => {
-          console.error(error)
-        })
-    },
-    async getAdress (cep) {
-      const thisVue = this
-      await axios
-        .get(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(function (response) {
-          const data = response.data
-          if (data.erro) {
-            throw new Error('CEP Invalido')
-          }
-          thisVue.rua = data.logradouro
-          thisVue.cidade = data.localidade
-          thisVue.bairro = data.bairro
-          thisVue.estado = data.uf
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
-  },
-  watch: {
-    cep (value) {
-      value = value.trim()
-      value = value.replace(/[^a-z0-9]/gi, '')
-      if (value.length === 8) {
-        this.getAdress(value)
-      } else {
-        this.rua = ''
-        this.cidade = ''
-        this.bairro = ''
-        this.uf = ''
-      }
     }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .custom-file-label::after {
   content: 'Anexar foto';
