@@ -17,3 +17,7 @@
 
 ### <span style="padding: 3px 3px; background: green; color: #fff;">🧐 Lints and fixes files</span>
 👉 `npm run lint`
+
+## 🤖 Login
+
+#### Para logar, basta usar o usuário "Rayan" e a senha "12345"
