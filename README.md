@@ -1,29 +1,19 @@
-# cadastro-pacientes
+# Cadastro de Pacientes - Desafio Técnico da OM3
 
-## Project setup
-```
-npm install
-```
+## 🤖 Instalation to project
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+#### Clone or to make download of the repository and run the following commands:
 
-### Compiles and minifies for production
-```
-npm run build
-```
+#### <span style="padding: 3px 3px; background: blue; color: #fff;">🛠 Installation  of dependencies</span>
 
-### Run your unit tests
-```
-npm run test:unit
-```
+👉 `npm install`
 
-### Lints and fixes files
-```
-npm run lint
-```
+#### <span style="padding: 3px 3px; background: blue; color: #fff;">💻 To start the development environment</span>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+👉 `npm run serve`
+
+#### <span style="padding: 3px 3px; background: green; color: #fff;">👌 To build the project into production</span>
+👉 `npm run build`
+
+### <span style="padding: 3px 3px; background: green; color: #fff;">🧐 Lints and fixes files</span>
+👉 `npm run lint`
